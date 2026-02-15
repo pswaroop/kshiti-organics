@@ -1,3 +1,4 @@
+// ProductCard.tsx
 import React, { useState } from "react";
 import { ShoppingCart, Plus, Check } from "lucide-react";
 import { Product } from "@/types/product";
@@ -19,7 +20,11 @@ interface ProductCardProps {
   index: number;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, index }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  viewMode,
+  index,
+}) => {
   const { addToCart } = useCart();
   const [selectedWeight, setSelectedWeight] = useState("1kg");
   const [isAdded, setIsAdded] = useState(false);
@@ -37,10 +42,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, index }) =
   };
 
   const handleAddToCart = () => {
+    // Prevent adding if out of stock
+    if (product.outOfStock) return;
+
     const weight = weightOptions.find((w) => w.label === selectedWeight);
-    const price = weight && product.pricePerKg 
-      ? calculatePrice(weight.multiplier) || 0 
-      : 20; // Default for per-piece items
+    const price =
+      weight && product.pricePerKg
+        ? calculatePrice(weight.multiplier) || 0
+        : 20; // Default for per-piece items
 
     addToCart(product, selectedWeight, price);
     setIsAdded(true);
@@ -56,37 +65,66 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, index }) =
   if (viewMode === "list") {
     return (
       <div
-        className="flex gap-4 bg-card rounded-2xl p-4 shadow-soft hover:shadow-card transition-all duration-300 animate-fade-in"
+        className={cn(
+          "flex gap-4 bg-card rounded-2xl p-4 shadow-soft hover:shadow-card transition-all duration-300 animate-fade-in",
+          product.outOfStock && "opacity-75 grayscale-[0.5]", // Visual dimming for list view
+        )}
         style={{ animationDelay: `${index * 0.05}s` }}
       >
-        <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
+        <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden relative">
           <img
             src={product.image}
             alt={product.name}
             className="w-full h-full object-cover"
           />
+          {product.outOfStock && (
+            <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+              <span className="text-[10px] font-bold bg-muted px-2 py-1 rounded-full uppercase">
+                OOS
+              </span>
+            </div>
+          )}
         </div>
         <div className="flex-1 min-w-0">
-          <span className="text-xs text-primary font-medium">{product.category}</span>
-          <h3 className="font-display font-semibold text-foreground truncate">{product.name}</h3>
-          <p className="text-lg font-bold text-primary mt-1">{currentPrice()}</p>
+          <span className="text-xs text-primary font-medium">
+            {product.category}
+          </span>
+          <h3 className="font-display font-semibold text-foreground truncate">
+            {product.name}
+          </h3>
+          <p className="text-lg font-bold text-primary mt-1">
+            {currentPrice()}
+          </p>
         </div>
         <Button
           onClick={handleAddToCart}
+          disabled={product.outOfStock}
           className={cn(
             "self-center transition-all",
-            isAdded ? "bg-leaf" : "btn-primary"
+            isAdded ? "bg-leaf" : "btn-primary",
+            product.outOfStock &&
+              "bg-muted text-muted-foreground hover:bg-muted cursor-not-allowed",
           )}
         >
-          {isAdded ? <Check className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+          {product.outOfStock ? (
+            <span className="text-xs">Out of Stock</span>
+          ) : isAdded ? (
+            <Check className="h-5 w-5" />
+          ) : (
+            <Plus className="h-5 w-5" />
+          )}
         </Button>
       </div>
     );
   }
 
+  // Grid View
   return (
     <div
-      className="group bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-all duration-300 hover-lift animate-fade-in"
+      className={cn(
+        "group bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-all duration-300 hover-lift animate-fade-in",
+        product.outOfStock && "pointer-events-none lg:pointer-events-auto", // Optional: reduce interactivity
+      )}
       style={{ animationDelay: `${index * 0.05}s` }}
     >
       {/* Image */}
@@ -94,29 +132,51 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, index }) =
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className={cn(
+            "w-full h-full object-cover transition-transform duration-500 group-hover:scale-110",
+            product.outOfStock && "grayscale-[0.8] opacity-80",
+          )}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+        {/* Hover Gradient (Hidden if OOS for cleaner look, or kept) */}
+        {!product.outOfStock && (
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        )}
+
+        {/* Out of Stock Overlay */}
+        {product.outOfStock && (
+          <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/10">
+            <span className="bg-card/95 text-foreground px-4 py-2 rounded-lg text-sm font-bold shadow-sm uppercase tracking-wider">
+              Out of Stock
+            </span>
+          </div>
+        )}
 
         {/* Category Badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 z-20">
           <span className="px-3 py-1 bg-card/90 backdrop-blur-sm rounded-full text-xs font-medium text-foreground">
             {product.category}
           </span>
         </div>
 
-        {/* Quick Add Button */}
-        <button
-          onClick={handleAddToCart}
-          className={cn(
-            "absolute bottom-3 right-3 p-3 rounded-full transition-all duration-300 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100",
-            isAdded 
-              ? "bg-leaf text-primary-foreground" 
-              : "bg-primary text-primary-foreground hover:bg-primary/90"
-          )}
-        >
-          {isAdded ? <Check className="h-5 w-5" /> : <ShoppingCart className="h-5 w-5" />}
-        </button>
+        {/* Quick Add Button - Hide if Out of Stock */}
+        {!product.outOfStock && (
+          <button
+            onClick={handleAddToCart}
+            className={cn(
+              "absolute bottom-3 right-3 p-3 rounded-full transition-all duration-300 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-20",
+              isAdded
+                ? "bg-leaf text-primary-foreground"
+                : "bg-primary text-primary-foreground hover:bg-primary/90",
+            )}
+          >
+            {isAdded ? (
+              <Check className="h-5 w-5" />
+            ) : (
+              <ShoppingCart className="h-5 w-5" />
+            )}
+          </button>
+        )}
       </div>
 
       {/* Content */}
@@ -125,9 +185,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, index }) =
           {product.name}
         </h3>
 
-        {/* Weight Selection */}
+        {/* Weight Selection - Disabled visual if OOS */}
         {product.pricePerKg && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
+          <div
+            className={cn(
+              "flex flex-wrap gap-1.5 mb-3",
+              product.outOfStock && "opacity-50 pointer-events-none",
+            )}
+          >
             {weightOptions.map((weight) => (
               <button
                 key={weight.label}
@@ -136,7 +201,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, index }) =
                   "px-2.5 py-1 rounded-lg text-xs font-medium transition-all",
                   selectedWeight === weight.label
                     ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80",
                 )}
               >
                 {weight.label}
@@ -147,22 +212,29 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, index }) =
 
         {/* Price */}
         <div className="flex items-center justify-between">
-          <div>
+          <div className={cn(product.outOfStock && "opacity-50")}>
             <p className="text-xl font-bold text-primary">{currentPrice()}</p>
             {product.pricePerKg && (
-              <p className="text-xs text-muted-foreground">₹{product.pricePerKg}/kg</p>
+              <p className="text-xs text-muted-foreground">
+                ₹{product.pricePerKg}/kg
+              </p>
             )}
           </div>
 
           <Button
             onClick={handleAddToCart}
+            disabled={product.outOfStock}
             size="sm"
             className={cn(
               "rounded-full transition-all",
-              isAdded ? "bg-leaf hover:bg-leaf/90" : "btn-primary"
+              isAdded ? "bg-leaf hover:bg-leaf/90" : "btn-primary",
+              product.outOfStock &&
+                "bg-muted text-muted-foreground hover:bg-muted cursor-not-allowed border border-border",
             )}
           >
-            {isAdded ? (
+            {product.outOfStock ? (
+              <span className="text-xs">Out of Stock</span>
+            ) : isAdded ? (
               <>
                 <Check className="h-4 w-4 mr-1" />
                 Added

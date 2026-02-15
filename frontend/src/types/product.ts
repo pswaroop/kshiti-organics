@@ -6,6 +6,8 @@ export interface Product {
   pricePerUnit?: string;
   image: string;
   description?: string;
+  active: boolean;
+  outOfStock: boolean;
 }
 
 export interface CartItem extends Product {
