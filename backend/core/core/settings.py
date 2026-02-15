@@ -160,5 +160,5 @@ JAZZMIN_UI_TWEAKS = {
     "dark_mode_theme": "darkly",
 }
 
-RAZORPAY_KEY_ID = "rzp_test_SGIzk9IpXNue4T"         # Replace with your actual Key ID
-RAZORPAY_KEY_SECRET = "cSESjEQN5MHwPFW7gP3sKo66" # Replace with your actual Key Secret
+RAZORPAY_KEY_ID = "test"         # Replace with your actual Key ID
+RAZORPAY_KEY_SECRET = "test" # Replace with your actual Key Secret
