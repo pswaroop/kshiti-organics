@@ -254,8 +254,13 @@ const Menu: React.FC = () => {
         // Run fetches in parallel
         const [catRes, prodRes] = await Promise.all([
           // Note: Ensure your Django server is running on port 8000
-          fetch("http://127.0.0.1:8000/api/categories/").catch(() => null),
-          fetch("http://127.0.0.1:8000/api/products/").catch(() => null),
+
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categories/`).catch(
+            () => null,
+          ),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/`).catch(
+            () => null,
+          ),
         ]);
 
         // Process Categories
