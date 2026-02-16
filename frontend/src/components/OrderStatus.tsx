@@ -46,7 +46,7 @@ const OrderStatus: React.FC = () => {
         // Note: You need to ensure your backend exposes a retrieve endpoint for orders
         // Example: router.register(r'orders', OrderViewSet) in Django handles this automatically at /api/orders/{id}/
         const response = await fetch(
-          `http://127.0.0.1:8000/api/orders/${orderId}/`,
+          `${import.meta.env.VITE_API_BASE_URL}/api/orders/${orderId}/`,
         );
 
         if (!response.ok) {
