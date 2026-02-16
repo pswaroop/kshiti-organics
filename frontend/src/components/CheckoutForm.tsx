@@ -478,7 +478,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ isOpen, onClose }) => {
 
       // 2. Create Order on Backend (Pass payment_mode)
       const orderResponse = await fetch(
-        "http://127.0.0.1:8000/api/create-order/",
+        // "http://127.0.0.1:8000/api/create-order/",
+        `${import.meta.env.VITE_API_BASE_URL}/api/create-order/`,
+
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -525,7 +527,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ isOpen, onClose }) => {
         handler: async function (response: RazorpayResponse) {
           try {
             const verifyRes = await fetch(
-              "http://127.0.0.1:8000/api/verify-payment/",
+              `${import.meta.env.VITE_API_BASE_URL}/api/verify-payment/`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
