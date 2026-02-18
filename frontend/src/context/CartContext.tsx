@@ -122,6 +122,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addToCart = useCallback(
     (product: Product, weight: string, price: number) => {
+      // Force price to be a number to prevent string concatenation bugs
+      const numericPrice = Number(price);
+
       setItems((prev) => {
         const existingItem = prev.find(
           (item) => item.id === product.id && item.selectedWeight === weight,
@@ -133,8 +136,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
               ? {
                   ...item,
                   quantity: item.quantity + 1,
-                  // Use the price passed to the function to ensure accuracy
-                  totalPrice: (item.quantity + 1) * price,
+                  // Use the numeric price for calculation
+                  totalPrice: (item.quantity + 1) * numericPrice,
                 }
               : item,
           );
@@ -146,9 +149,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
             ...product,
             quantity: 1,
             selectedWeight: weight,
-            totalPrice: price,
-            // Optimization: If your CartItem type allows it, storing 'unitPrice': price
-            // here is better for updateQuantity later, but the logic below works too.
+            totalPrice: numericPrice,
+            // Optimization: If your CartItem type allows it, storing 'unitPrice': numericPrice
+            // here is better, but the dynamic calculation below works too.
           },
         ];
       });
@@ -174,8 +177,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       setItems((prev) =>
         prev.map((item) => {
           if (item.id === id && item.selectedWeight === weight) {
-            // Calculate unit price dynamically to avoid storing extra state
-            const unitPrice = item.totalPrice / item.quantity;
+            // Calculate unit price dynamically and safely
+            const currentTotal = Number(item.totalPrice);
+            const currentQty = Number(item.quantity);
+            const unitPrice = currentTotal / currentQty;
+
             return {
               ...item,
               quantity,
@@ -193,12 +199,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     setItems([]);
   }, []);
 
-  // --- FIX APPLIED HERE ---
-  // Old: items.reduce((sum, item) => sum + item.quantity, 0);
-  // New: items.length (Counts unique products, not total units)
+  // Counts unique products (not total quantity)
   const totalItems = items.length;
 
-  const totalPrice = items.reduce((sum, item) => sum + item.totalPrice, 0);
+  // Ensure total price summation is numeric
+  const totalPrice = items.reduce(
+    (sum, item) => sum + Number(item.totalPrice),
+    0,
+  );
 
   return (
     <CartContext.Provider
