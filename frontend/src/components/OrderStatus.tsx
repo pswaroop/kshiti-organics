@@ -138,7 +138,9 @@ const OrderStatus: React.FC = () => {
             <div>
               <p className="text-sm text-muted-foreground mb-1">Order ID</p>
               <div className="flex items-center gap-2">
-                <span className="font-mono font-bold text-lg">#{order.id}</span>
+                <span className="font-mono font-bold text-lg">
+                  #{order.order_id}
+                </span>
                 <button
                   onClick={() => copyToClipboard(`#${order.order_id}`)}
                   className="p-1.5 hover:bg-background rounded-md transition-colors text-muted-foreground"
