@@ -560,7 +560,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ isOpen, onClose }) => {
         navigate(`/order/${orderData.order_id}`);
         toast({
           title: "Order Placed!",
-          description: `Your COD order #${orderData.id} has been placed.`,
+          description: `Your COD order has been placed.`,
         });
         setIsSubmitting(false);
         return;

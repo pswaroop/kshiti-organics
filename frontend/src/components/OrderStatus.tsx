@@ -23,6 +23,7 @@ interface OrderItem {
 
 interface OrderDetails {
   id: number;
+  order_id: string;
   full_name: string;
   phone_number: string;
   address: string;
@@ -139,7 +140,7 @@ const OrderStatus: React.FC = () => {
               <div className="flex items-center gap-2">
                 <span className="font-mono font-bold text-lg">#{order.id}</span>
                 <button
-                  onClick={() => copyToClipboard(`#${order.id}`)}
+                  onClick={() => copyToClipboard(`#${order.order_id}`)}
                   className="p-1.5 hover:bg-background rounded-md transition-colors text-muted-foreground"
                 >
                   <Copy className="h-4 w-4" />
