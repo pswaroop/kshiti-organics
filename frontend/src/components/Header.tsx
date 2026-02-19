@@ -211,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isMenuOpen }) => {
             src="/favicon.svg"
             alt="Kshiti Organics Logo"
             // Adjusted size: h-20 (80px) on mobile, slightly larger on desktop
-            className="h-20 w-20 sm:h-24 sm:w-24 object-contain transition-transform duration-300 group-hover:scale-105"
+            className="h-40 w-40 mt-2 sm:h-48 sm:w-48  object-contain transition-transform duration-300 group-hover:scale-105"
           />
 
           {/* Text - Visible on ALL screens now (Removed 'hidden sm:block') */}
