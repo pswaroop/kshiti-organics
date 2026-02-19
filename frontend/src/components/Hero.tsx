@@ -37,7 +37,8 @@ const Hero: React.FC = () => {
               {/* Logo */}
               <div className="relative">
                 <img 
-                  src={logoUrl} 
+                  //src={logoUrl}
+                  src="/favicon.svg"
                   alt="Organic Products Logo" 
                   className="w-72 h-72 sm:w-96 sm:h-96 lg:w-[30rem] lg:h-[30rem] object-contain drop-shadow-2xl"
                 />
