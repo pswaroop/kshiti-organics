@@ -11,8 +11,8 @@ const Footer: React.FC = () => {
             <div className="flex items-center gap-2 mb-4">
   <div className="p-2 ">
     <img
-      //src="https://i.ibb.co/XxxgB0T1/Whats-App-Image-2025-12-13-at-1-12-41-PM.jpg" // replace with your logo path
-      src="https://i.ibb.co/xtFw6kxF/olg.png"
+      src="https://i.ibb.co/XxxgB0T1/Whats-App-Image-2025-12-13-at-1-12-41-PM.jpg" // replace with your logo path
+      //src="https://i.ibb.co/xtFw6kxF/olg.png"
       alt="Kshiti Organics Logo"
       className="h-28 w-28 object-contain "
     />
