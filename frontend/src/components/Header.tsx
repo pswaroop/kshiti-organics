@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ShoppingCart, Menu, X, Leaf } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/logo.png";
+//import logo from "favicon.svg";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -35,7 +35,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isMenuOpen }) => {
         <a href="/" className="flex items-center gap-2 group relative h-20">
   {/* Logo */}
  <img
-    src="https://i.ibb.co/xtFw6kxF/olg.png"
+    //src="https://i.ibb.co/xtFw6kxF/olg.png"
+    src="/favicon.svg"
     alt="Kshiti Organics Logo"
     className="h-40 w-40 mt-2 sm:h-48 sm:w-48  object-contain transition-transform duration-300 group-hover:scale-105"
   />
