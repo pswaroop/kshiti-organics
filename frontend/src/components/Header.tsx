@@ -211,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isMenuOpen }) => {
         <a href="/" className="flex-shrink-0 flex items-center">
           <img
             // Ensure this file is in your 'public' folder
-            src="/kshitilogonobg.jpeg" 
+            src="/kshitilogonobg.png" 
             alt="Kshiti Organics - Grown By Farmers, Loved By All"
             // Mobile: h-16 (64px) | Desktop: h-24 (96px)
             // This size ensures the tagline is readable without breaking layout
