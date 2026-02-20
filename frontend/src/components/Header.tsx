@@ -36,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isMenuOpen }) => {
   {/* Logo */}
  <img
     //src="https://i.ibb.co/xtFw6kxF/olg.png"
-    src="/kshitilogo.jpeg"
+    src="/favicon.svg"
     alt="Kshiti Organics Logo"
     className="h-50 w-50 mt-2 sm:h-48 sm:w-48  object-contain transition-transform duration-300 group-hover:scale-105"
   />
