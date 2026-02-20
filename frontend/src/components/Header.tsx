@@ -211,12 +211,21 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isMenuOpen }) => {
         <a href="/" className="flex-shrink-0 flex items-center">
           <img
             // Ensure this file is in your 'public' folder
-            src="/kshitilogonobg.jpg" 
+            src="/kshitilogonobg.jpeg" 
             alt="Kshiti Organics - Grown By Farmers, Loved By All"
             // Mobile: h-16 (64px) | Desktop: h-24 (96px)
             // This size ensures the tagline is readable without breaking layout
             className="h-16 w-auto md:h-24 object-contain transition-transform duration-300 hover:scale-105"
           />
+
+          <div className="hidden sm:block">
+     <h1 className="font-display text-xl font-bold text-black leading-tight">
+       <span className="text-green-800">K</span>shiti Organics
+     </h1>
+     <p className="text-xs text-muted-foreground -mt-1">
+       Grown By Farmers. Loved By All!
+     </p>
+   </div>
         </a>
 
         {/* NAVIGATION - DESKTOP */}
