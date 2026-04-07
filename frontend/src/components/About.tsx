@@ -275,7 +275,7 @@ const About: React.FC = () => {
                 <p className="text-green-800 text-sm font-medium mt-1">
                   License No:{" "}
                   <span className="font-mono text-base font-bold tracking-wide">
-                    13626026000058
+                    23626023000455
                   </span>
                 </p>
                 <p className="text-green-700/80 text-xs mt-1">
