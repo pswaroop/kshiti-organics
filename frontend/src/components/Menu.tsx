@@ -22,7 +22,7 @@
 // }
 
 // const Menu: React.FC = () => {
-//   // State for Data (Initialize with defaults)
+//   // State for Data (Initialize with defaults to prevent empty flash)
 //   const [products, setProducts] = useState<Product[]>(defaultProducts);
 //   const [categoryList, setCategoryList] = useState<string[]>(defaultCategories);
 //   const [categoryIconMap, setCategoryIconMap] =
@@ -37,42 +37,58 @@
 //   // Fetch Data from Backend
 //   useEffect(() => {
 //     const fetchBackendData = async () => {
+//       setIsLoading(true);
 //       try {
+//         console.log("Fetching data from API...");
+
 //         // Run fetches in parallel
 //         const [catRes, prodRes] = await Promise.all([
-//           // Note: Ensure your Django server is running on port 8000
-
 //           fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categories/`).catch(
-//             () => null,
+//             (err) => {
+//               console.error("Category fetch failed:", err);
+//               return null;
+//             },
 //           ),
 //           fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/`).catch(
-//             () => null,
+//             (err) => {
+//               console.error("Product fetch failed:", err);
+//               return null;
+//             },
 //           ),
 //         ]);
 
-//         // Process Categories
+//         // --- Process Categories ---
 //         if (catRes && catRes.ok) {
-//           const catData: BackendCategory[] = await catRes.json();
+//           const catJson = await catRes.json();
+//           // FIX: Handle both paginated { results: [] } and flat [] responses
+//           const catData: BackendCategory[] = Array.isArray(catJson)
+//             ? catJson
+//             : catJson.results;
 
-//           if (catData.length > 0) {
-//             // 1. Create list of names (prepend "All")
+//           if (catData && catData.length > 0) {
+//             // 1. Create list of names (prepend "All") - Order is preserved from API
 //             const newCatList = ["All", ...catData.map((c) => c.name)];
 //             setCategoryList(newCatList);
 
 //             // 2. Create Icon Map
 //             const newIconMap: Record<string, string> = { All: "🌿" };
 //             catData.forEach((c) => {
-//               newIconMap[c.name] = c.icon;
+//               newIconMap[c.name] = c.icon || "📦";
 //             });
 //             setCategoryIconMap(newIconMap);
 //           }
 //         }
 
-//         // Process Products
+//         // --- Process Products ---
 //         if (prodRes && prodRes.ok) {
-//           const prodData: Product[] = await prodRes.json();
-//           if (prodData.length > 0) {
-//             setProducts(prodData);
+//           const prodJson = await prodRes.json();
+//           // FIX: Handle both paginated { results: [] } and flat [] responses
+//           const prodData: Product[] = Array.isArray(prodJson)
+//             ? prodJson
+//             : prodJson.results;
+
+//           if (prodData && prodData.length > 0) {
+//             setProducts(prodData); // Order is preserved from API
 //           }
 //         }
 //       } catch (error) {
@@ -99,7 +115,7 @@
 //         selectedCategory === "All" || product.category === selectedCategory;
 //       return matchesSearch && matchesCategory;
 //     });
-//   }, [searchQuery, selectedCategory, products]); // Added 'products' dependency
+//   }, [searchQuery, selectedCategory, products]);
 
 //   // 2. Calculate counts based only on ACTIVE products
 //   const productCounts = useMemo(() => {
@@ -107,11 +123,21 @@
 //     const activeProducts = products.filter((p) => p.active);
 
 //     const counts: Record<string, number> = { All: activeProducts.length };
+
+//     // Initialize all categories to 0 to be safe
+//     categoryList.forEach((cat) => {
+//       if (cat !== "All") counts[cat] = 0;
+//     });
+
 //     activeProducts.forEach((product) => {
-//       counts[product.category] = (counts[product.category] || 0) + 1;
+//       if (counts[product.category] !== undefined) {
+//         counts[product.category]++;
+//       } else {
+//         counts[product.category] = 1;
+//       }
 //     });
 //     return counts;
-//   }, [products]); // Added 'products' dependency
+//   }, [products, categoryList]);
 
 //   return (
 //     <section id="products" className="py-16 bg-muted/30 min-h-screen">
@@ -401,11 +427,17 @@ const Menu: React.FC = () => {
       // If product is not active, hide it completely
       if (!product.active) return false;
 
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+      // Convert search query to lowercase once for performance
+      const searchLower = searchQuery.toLowerCase();
+
+      // Match against product name OR category
+      const matchesSearch =
+        product.name.toLowerCase().includes(searchLower) ||
+        product.category.toLowerCase().includes(searchLower);
+
       const matchesCategory =
         selectedCategory === "All" || product.category === selectedCategory;
+        
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, selectedCategory, products]);
