@@ -469,6 +469,11 @@ const OrderStatus: React.FC = () => {
                   ₹{order.total_amount}
                 </span>
               </div>
+              
+              {/* Delivery Note */}
+              <p className="text-xs text-muted-foreground mt-3 italic">
+                NOTE: Delivery is free above ₹2000. Orders below ₹2000 will have delivery charges.
+              </p>
             </div>
 
             {/* Right: Shipping Info */}
