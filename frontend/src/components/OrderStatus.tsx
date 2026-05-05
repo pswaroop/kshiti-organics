@@ -386,7 +386,7 @@ const OrderStatus: React.FC = () => {
           <p className="text-muted-foreground">
             Thank you for shopping with Kshiti Organics.
           </p>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-green-600 font-medium mt-2">
             Order details have been sent to your email.
           </p>
         </div>
@@ -471,7 +471,7 @@ const OrderStatus: React.FC = () => {
               </div>
               
               {/* Delivery Note */}
-              <p className="text-xs text-muted-foreground mt-3 italic">
+              <p className="text-xs text-red-500 font-medium mt-3 italic">
                 NOTE: Delivery is free above ₹2000. Orders below ₹2000 will have delivery charges.
               </p>
             </div>
